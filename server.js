@@ -13,8 +13,7 @@ app.get("/watch", (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>VFY Custom Player</title>
         <script src="https://www.youtube.com/iframe_api"></script>
-        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-        <style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css"><style>
             * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
             body { background: #121212; color: white; text-align: center; padding-top: 10px; }
             
