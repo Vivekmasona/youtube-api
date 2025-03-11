@@ -13,12 +13,20 @@ app.get("/watch", (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Background YouTube Play</title>
         <script src="https://www.youtube.com/iframe_api"></script>
-        <style> body { text-align: center; font-family: Arial; } </style>
+        <style> 
+            body { text-align: center; font-family: Arial; } 
+            .mute-btn { 
+                position: fixed; bottom: 20px; right: 20px; 
+                background: red; color: white; border: none; padding: 10px 20px; 
+                cursor: pointer; font-size: 16px; border-radius: 5px;
+            }
+        </style>
     </head>
     <body>
 
         <h2>Background YouTube Play</h2>
         <div id="player"></div>
+        <button class="mute-btn" id="muteToggle">🔇 Mute</button>
 
         <script>
             let player;
@@ -34,7 +42,10 @@ app.get("/watch", (req, res) => {
             function onPlayerReady(event) {
                 player.mute(); // Mute first to allow autoplay
                 player.playVideo();
-                setTimeout(() => player.unMute(), 1000); // Unmute after 1 sec
+                setTimeout(() => {
+                    player.unMute(); // Unmute automatically after 1 sec
+                    updateMuteButton();
+                }, 1000);
                 detectBackground();
             }
 
@@ -46,6 +57,19 @@ app.get("/watch", (req, res) => {
                     }
                 }, 1000);
             }
+
+            function updateMuteButton() {
+                document.getElementById("muteToggle").innerText = player.isMuted() ? "🔇 Mute" : "🔊 Unmute";
+            }
+
+            document.getElementById("muteToggle").addEventListener("click", () => {
+                if (player.isMuted()) {
+                    player.unMute();
+                } else {
+                    player.mute();
+                }
+                updateMuteButton();
+            });
         </script>
 
     </body>
