@@ -15,22 +15,12 @@ app.get("/watch", (req, res) => {
         <script src="https://www.youtube.com/iframe_api"></script>
         <style> 
             body { text-align: center; font-family: Arial; } 
-            .control-btn { 
-                position: fixed; bottom: 20px; right: 20px; 
-                background: red; color: white; border: none; padding: 10px 20px; 
-                cursor: pointer; font-size: 16px; border-radius: 5px;
-                margin: 5px;
-            }
-            .mute-btn { right: 100px; } /* Mute button position */
+            .hidden-video { width: 1px; height: 1px; opacity: 0; position: absolute; } 
         </style>
     </head>
     <body>
 
-        <h2>Background YouTube Play</h2>
-        <div id="player"></div>
-        
-        <button class="control-btn" id="playToggle">▶️ Play</button>
-        <button class="control-btn mute-btn" id="muteToggle">🔇 Mute</button>
+        <div id="player" class="hidden-video"></div>
 
         <script>
             let player;
@@ -42,48 +32,25 @@ app.get("/watch", (req, res) => {
                     events: { 'onReady': onPlayerReady }
                 });
             }
-            
+
             function onPlayerReady(event) {
-                player.mute(); // Mute first to allow autoplay
+                player.mute(); // Start muted to allow autoplay
                 player.playVideo();
-                setTimeout(() => {
-                    player.unMute(); // Auto-unmute after 1 sec
-                    updateButtons();
-                }, 1000);
-                detectBackground();
+                setTimeout(() => player.unMute(), 1000); // Auto unmute after 1 second
+                handleBackgroundPlayback();
             }
 
-            function detectBackground() {
-                setInterval(() => {
+            function handleBackgroundPlayback() {
+                document.addEventListener("visibilitychange", () => {
                     if (document.hidden) {
-                        console.log("Background Detected! Auto Resume.");
-                        player.playVideo();
+                        console.log("🔒 Display Locked, Preparing Auto Play...");
+                        setTimeout(() => {
+                            console.log("▶️ Auto Resume After Lock");
+                            player.playVideo();
+                        }, 1500);
                     }
-                }, 1000);
+                });
             }
-
-            function updateButtons() {
-                document.getElementById("muteToggle").innerText = player.isMuted() ? "🔇 Mute" : "🔊 Unmute";
-                document.getElementById("playToggle").innerText = player.getPlayerState() === 1 ? "⏸️ Pause" : "▶️ Play";
-            }
-
-            document.getElementById("muteToggle").addEventListener("click", () => {
-                if (player.isMuted()) {
-                    player.unMute();
-                } else {
-                    player.mute();
-                }
-                updateButtons();
-            });
-
-            document.getElementById("playToggle").addEventListener("click", () => {
-                if (player.getPlayerState() === 1) { // Playing
-                    player.pauseVideo();
-                } else {
-                    player.playVideo();
-                }
-                updateButtons();
-            });
         </script>
 
     </body>
