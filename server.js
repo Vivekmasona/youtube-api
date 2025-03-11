@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/watch", (req, res) => {
-    const videoId = req.query.id;  // YouTube Video ID
+    const videoId = req.query.id;
     if (!videoId) return res.send("Video ID required!");
 
     const page = `
@@ -30,10 +30,14 @@ app.get("/watch", (req, res) => {
                     events: { 'onReady': onPlayerReady }
                 });
             }
+            
             function onPlayerReady(event) {
-                event.target.playVideo();
+                player.mute(); // Mute first to allow autoplay
+                player.playVideo();
+                setTimeout(() => player.unMute(), 1000); // Unmute after 1 sec
                 detectBackground();
             }
+
             function detectBackground() {
                 setInterval(() => {
                     if (document.hidden) {
@@ -51,4 +55,5 @@ app.get("/watch", (req, res) => {
     res.send(page);
 });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running on port ${port}`));
