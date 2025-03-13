@@ -13,6 +13,7 @@ async function fetchMetadata(url) {
             title: $("meta[property='og:title']").attr("content") || $("title").text() || "No Title Found",
             description: $("meta[property='og:description']").attr("content") || $("meta[name='description']").attr("content") || "No Description Found",
             thumbnail: $("meta[property='og:image']").attr("content") || "No Thumbnail Found",
+            video: $("meta[property='og:video']").attr("content") || null, // Extract Video URL
             url: url
         };
 
